@@ -1,0 +1,29 @@
+﻿@model List<string>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+</head>
+<body>
+    <h2>Шаг один</h2>
+    <h2>Введите желаемую дату Ваш номер телефона и разновидность животного</h2>
+    <h2>Убедительная просьба обратить внимание, запись производится за день, до желаемой процедуры стрижки</h2>
+    <form method='post'>
+        <label>Дата и время:</label><br />
+        <input type="date" name="date" /><br />
+
+        <label>Телефон:</label><br />
+        <input type="tel" name='phone' /><br />
+
+        <label for="kindOfAnimal">Разновидность животного:</label>
+        <select name="kindOfAnimal">
+            @foreach (string kindOfAnimal in Model)
+            {
+                <option value=@kindOfAnimal>@kindOfAnimal</option>
+            }
+        </select>
+        <input type='submit' value='Отправить запрос' />
+    </form>
+</body>
+</html>

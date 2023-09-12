@@ -1,0 +1,347 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 15.3
+-- Dumped by pg_dump version 15.3
+
+-- Started on 2023-09-12 08:33:42
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- TOC entry 5 (class 2615 OID 16447)
+-- Name: administratorschema; Type: SCHEMA; Schema: -; Owner: Administrator
+--
+
+CREATE SCHEMA administratorschema;
+
+
+ALTER SCHEMA administratorschema OWNER TO "Administrator";
+
+--
+-- TOC entry 849 (class 1247 OID 24693)
+-- Name: animals; Type: TYPE; Schema: administratorschema; Owner: Administrator
+--
+
+CREATE TYPE administratorschema.animals AS (
+	kindofanimal text,
+	breed text,
+	animalname text
+);
+
+
+ALTER TYPE administratorschema.animals OWNER TO "Administrator";
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- TOC entry 220 (class 1259 OID 32826)
+-- Name: animals_breed_and_price; Type: TABLE; Schema: administratorschema; Owner: Administrator
+--
+
+CREATE TABLE administratorschema.animals_breed_and_price (
+    id integer NOT NULL,
+    kind_of_animal text,
+    breed text,
+    cooficient integer
+);
+
+
+ALTER TABLE administratorschema.animals_breed_and_price OWNER TO "Administrator";
+
+--
+-- TOC entry 219 (class 1259 OID 32825)
+-- Name: animals_breed_and_price_id_seq; Type: SEQUENCE; Schema: administratorschema; Owner: Administrator
+--
+
+CREATE SEQUENCE administratorschema.animals_breed_and_price_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE administratorschema.animals_breed_and_price_id_seq OWNER TO "Administrator";
+
+--
+-- TOC entry 3351 (class 0 OID 0)
+-- Dependencies: 219
+-- Name: animals_breed_and_price_id_seq; Type: SEQUENCE OWNED BY; Schema: administratorschema; Owner: Administrator
+--
+
+ALTER SEQUENCE administratorschema.animals_breed_and_price_id_seq OWNED BY administratorschema.animals_breed_and_price.id;
+
+
+--
+-- TOC entry 217 (class 1259 OID 16548)
+-- Name: clientbase; Type: TABLE; Schema: administratorschema; Owner: Administrator
+--
+
+CREATE TABLE administratorschema.clientbase (
+    id integer NOT NULL,
+    name character varying(64),
+    phone character varying(32),
+    animals administratorschema.animals[]
+);
+
+
+ALTER TABLE administratorschema.clientbase OWNER TO "Administrator";
+
+--
+-- TOC entry 216 (class 1259 OID 16547)
+-- Name: clientbase_id_seq; Type: SEQUENCE; Schema: administratorschema; Owner: Administrator
+--
+
+CREATE SEQUENCE administratorschema.clientbase_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE administratorschema.clientbase_id_seq OWNER TO "Administrator";
+
+--
+-- TOC entry 3353 (class 0 OID 0)
+-- Dependencies: 216
+-- Name: clientbase_id_seq; Type: SEQUENCE OWNED BY; Schema: administratorschema; Owner: Administrator
+--
+
+ALTER SEQUENCE administratorschema.clientbase_id_seq OWNED BY administratorschema.clientbase.id;
+
+
+--
+-- TOC entry 215 (class 1259 OID 16497)
+-- Name: orderlist; Type: TABLE; Schema: administratorschema; Owner: Administrator
+--
+
+CREATE TABLE administratorschema.orderlist (
+    id integer NOT NULL,
+    orderdate timestamp without time zone,
+    name character varying(64),
+    phone character varying(32),
+    kindofanimal character varying(32),
+    animalname character varying(32),
+    breed character varying(32),
+    price integer
+);
+
+
+ALTER TABLE administratorschema.orderlist OWNER TO "Administrator";
+
+--
+-- TOC entry 214 (class 1259 OID 16496)
+-- Name: orderlist_id_seq; Type: SEQUENCE; Schema: administratorschema; Owner: Administrator
+--
+
+CREATE SEQUENCE administratorschema.orderlist_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE administratorschema.orderlist_id_seq OWNER TO "Administrator";
+
+--
+-- TOC entry 3356 (class 0 OID 0)
+-- Dependencies: 214
+-- Name: orderlist_id_seq; Type: SEQUENCE OWNED BY; Schema: administratorschema; Owner: Administrator
+--
+
+ALTER SEQUENCE administratorschema.orderlist_id_seq OWNED BY administratorschema.orderlist.id;
+
+
+--
+-- TOC entry 3189 (class 2604 OID 32829)
+-- Name: animals_breed_and_price id; Type: DEFAULT; Schema: administratorschema; Owner: Administrator
+--
+
+ALTER TABLE ONLY administratorschema.animals_breed_and_price ALTER COLUMN id SET DEFAULT nextval('administratorschema.animals_breed_and_price_id_seq'::regclass);
+
+
+--
+-- TOC entry 3188 (class 2604 OID 16551)
+-- Name: clientbase id; Type: DEFAULT; Schema: administratorschema; Owner: Administrator
+--
+
+ALTER TABLE ONLY administratorschema.clientbase ALTER COLUMN id SET DEFAULT nextval('administratorschema.clientbase_id_seq'::regclass);
+
+
+--
+-- TOC entry 3187 (class 2604 OID 16500)
+-- Name: orderlist id; Type: DEFAULT; Schema: administratorschema; Owner: Administrator
+--
+
+ALTER TABLE ONLY administratorschema.orderlist ALTER COLUMN id SET DEFAULT nextval('administratorschema.orderlist_id_seq'::regclass);
+
+
+--
+-- TOC entry 3343 (class 0 OID 32826)
+-- Dependencies: 220
+-- Data for Name: animals_breed_and_price; Type: TABLE DATA; Schema: administratorschema; Owner: Administrator
+--
+
+COPY administratorschema.animals_breed_and_price (id, kind_of_animal, breed, cooficient) FROM stdin;
+3	кот	лысый	1
+4	кот	обычный	2
+5	кот	волосатый	3
+1	пес	овчарка	4
+2	пес	той_терьер	2
+\.
+
+
+--
+-- TOC entry 3341 (class 0 OID 16548)
+-- Dependencies: 217
+-- Data for Name: clientbase; Type: TABLE DATA; Schema: administratorschema; Owner: Administrator
+--
+
+COPY administratorschema.clientbase (id, name, phone, animals) FROM stdin;
+1	testUser	7 (919) 585-63-18	\N
+2	tony	123123123	\N
+\.
+
+
+--
+-- TOC entry 3339 (class 0 OID 16497)
+-- Dependencies: 215
+-- Data for Name: orderlist; Type: TABLE DATA; Schema: administratorschema; Owner: Administrator
+--
+
+COPY administratorschema.orderlist (id, orderdate, name, phone, kindofanimal, animalname, breed, price) FROM stdin;
+\.
+
+
+--
+-- TOC entry 3358 (class 0 OID 0)
+-- Dependencies: 219
+-- Name: animals_breed_and_price_id_seq; Type: SEQUENCE SET; Schema: administratorschema; Owner: Administrator
+--
+
+SELECT pg_catalog.setval('administratorschema.animals_breed_and_price_id_seq', 1, false);
+
+
+--
+-- TOC entry 3359 (class 0 OID 0)
+-- Dependencies: 216
+-- Name: clientbase_id_seq; Type: SEQUENCE SET; Schema: administratorschema; Owner: Administrator
+--
+
+SELECT pg_catalog.setval('administratorschema.clientbase_id_seq', 2, true);
+
+
+--
+-- TOC entry 3360 (class 0 OID 0)
+-- Dependencies: 214
+-- Name: orderlist_id_seq; Type: SEQUENCE SET; Schema: administratorschema; Owner: Administrator
+--
+
+SELECT pg_catalog.setval('administratorschema.orderlist_id_seq', 4, true);
+
+
+--
+-- TOC entry 3195 (class 2606 OID 32833)
+-- Name: animals_breed_and_price animals_breed_and_price_pkey; Type: CONSTRAINT; Schema: administratorschema; Owner: Administrator
+--
+
+ALTER TABLE ONLY administratorschema.animals_breed_and_price
+    ADD CONSTRAINT animals_breed_and_price_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 3193 (class 2606 OID 16555)
+-- Name: clientbase clientbase_pkey; Type: CONSTRAINT; Schema: administratorschema; Owner: Administrator
+--
+
+ALTER TABLE ONLY administratorschema.clientbase
+    ADD CONSTRAINT clientbase_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 3191 (class 2606 OID 32908)
+-- Name: orderlist uniqueTime; Type: CONSTRAINT; Schema: administratorschema; Owner: Administrator
+--
+
+ALTER TABLE ONLY administratorschema.orderlist
+    ADD CONSTRAINT "uniqueTime" UNIQUE (orderdate);
+
+
+--
+-- TOC entry 3349 (class 0 OID 0)
+-- Dependencies: 5
+-- Name: SCHEMA administratorschema; Type: ACL; Schema: -; Owner: Administrator
+--
+
+GRANT ALL ON SCHEMA administratorschema TO users;
+
+
+--
+-- TOC entry 3350 (class 0 OID 0)
+-- Dependencies: 220
+-- Name: TABLE animals_breed_and_price; Type: ACL; Schema: administratorschema; Owner: Administrator
+--
+
+GRANT ALL ON TABLE administratorschema.animals_breed_and_price TO users;
+
+
+--
+-- TOC entry 3352 (class 0 OID 0)
+-- Dependencies: 217
+-- Name: TABLE clientbase; Type: ACL; Schema: administratorschema; Owner: Administrator
+--
+
+GRANT ALL ON TABLE administratorschema.clientbase TO users;
+
+
+--
+-- TOC entry 3354 (class 0 OID 0)
+-- Dependencies: 216
+-- Name: SEQUENCE clientbase_id_seq; Type: ACL; Schema: administratorschema; Owner: Administrator
+--
+
+GRANT ALL ON SEQUENCE administratorschema.clientbase_id_seq TO users;
+
+
+--
+-- TOC entry 3355 (class 0 OID 0)
+-- Dependencies: 215
+-- Name: TABLE orderlist; Type: ACL; Schema: administratorschema; Owner: Administrator
+--
+
+GRANT ALL ON TABLE administratorschema.orderlist TO users;
+
+
+--
+-- TOC entry 3357 (class 0 OID 0)
+-- Dependencies: 214
+-- Name: SEQUENCE orderlist_id_seq; Type: ACL; Schema: administratorschema; Owner: Administrator
+--
+
+GRANT ALL ON SEQUENCE administratorschema.orderlist_id_seq TO users;
+
+
+-- Completed on 2023-09-12 08:33:42
+
+--
+-- PostgreSQL database dump complete
+--
+

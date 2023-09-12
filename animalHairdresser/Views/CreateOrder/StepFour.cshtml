@@ -1,0 +1,21 @@
+﻿
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+</head>
+<body>
+    <h2>Введенные данные</h2>
+    <h2>Дата: @ViewData["dateTime"]</h2>
+    <h2>Телефон: @ViewData["phone"]</h2>
+    <h2>Разновидность животного: @ViewData["kindOfAnimal"]</h2>
+    <h2>Порода животного: @ViewData["animalBreed"]</h2>
+    <h2>Имя животного: @ViewData["animalName"]</h2>
+    <h2>Цена: @ViewData["price"]</h2>
+    <h2>Сделать этот заказ</h2>
+    <form method='post'>
+        
+        <button type='submit' name="price" value=@ViewData["price"]>Отправить запрос</button>
+    </form>
+</body>
+</html>

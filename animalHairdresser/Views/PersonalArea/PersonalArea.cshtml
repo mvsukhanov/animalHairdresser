@@ -1,0 +1,68 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+</head>
+<body>
+    <h1>Личный кабинет @ViewBag.Name</h1>
+    <table>
+        <tr>Мои заказы</tr>
+        <tr>
+            <td>Дата</td>
+            <td>Телефон</td>
+            <td>Разновидность животного</td>
+            <td>Порода животного</td>
+            <td>Имя животного</td>
+            <td>Цена</td>
+        </tr>
+        @foreach (var order in ViewBag.Orders)
+        {
+            <tr>
+                <td>@order.Date </td>
+                <td>@order.Phone </td>
+                <td>@order.KindOfAnimal </td>
+                <td>@order.Breed </td>
+                <td>@order.AnimalName </td>
+                <td>@order.Price </td>
+
+                <td>
+                    <form method="post">
+                        <input type="hidden" name="dateTime" value="@order.Date">
+                        <button type='submit' name="action" value="DeleteOrder">Удалить заказ</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </table>
+    <table>
+        <tr>Мои животные</tr>
+        <tr>
+            <td>Разновидность животного</td>
+            <td>Порода Животного</td>
+            <td>Имя животного</td>
+        </tr>
+        @foreach (var animal in ViewBag.Animals)
+        {
+            <tr>
+                <td>@animal.KindOfAnimal </td>
+                <td>@animal.Breed </td>
+                <td>@animal.AnimalName </td>
+
+                <td>
+                    <form method="post">
+                        <input type="hidden" name="kindOfAnimal" value="@animal.KindOfAnimal">
+                        <input type="hidden" name="breed" value="@animal.Breed">
+                        <input type="hidden" name="animalName" value="@animal.AnimalName">
+                        <button type='submit' name="action" value="DeleteAnimal">Такого животного у меня нет</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </table>
+    <form method="post">
+        <button type='submit' name="action" value="Disconnect">Выйти из личного кабинета</button>
+        <button type='submit' name="action" value="MakeNewOrder">Сделать заказ</button>
+        <button type='submit' name="action" value="Home">Домашняя страница</button>
+    </form>
+</body>
+</html>
