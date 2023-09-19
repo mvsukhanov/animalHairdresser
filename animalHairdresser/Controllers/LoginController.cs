@@ -7,11 +7,11 @@ namespace animalHairdresser.Controllers
 {
     public class LoginController : Controller
     {
-        public IUserBaseService UsersBaseService { get; set; }
+        private readonly IUserBaseService _usersBaseService;
 
         public LoginController(IUserBaseService userBaseService)
         {
-            UsersBaseService = userBaseService;
+            _usersBaseService = userBaseService;
         }
 
         [Route("Login")]
@@ -34,7 +34,7 @@ namespace animalHairdresser.Controllers
             string connString = String.Format("Host=localhost;Username={0};Port=5432;Password={1};Database=AnimalShop", name, password);
             try
             {
-                await UsersBaseService.UserExistsOrNotAsync(connString);
+                await _usersBaseService.UserExistsOrNotAsync(connString);
             }
             catch { return RedirectToAction("UserIsNotExist", "Login"); }
             

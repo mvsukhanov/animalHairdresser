@@ -10,13 +10,13 @@ namespace animalHairdresser.Controllers
 {
     public class PersonalAreaController : Controller
     {
-        public IClientBaseService ClientBaseService { get; set; }
-        public IOrderBaseService OrderBaseService { get; set; }
+        private readonly IClientBaseService _clientBaseService;
+        private readonly IOrderBaseService _orderBaseService;
 
         public PersonalAreaController(IClientBaseService clientBaseService, IOrderBaseService orderBaseService)
         {
-            ClientBaseService = clientBaseService;
-            OrderBaseService = orderBaseService;
+            _clientBaseService = clientBaseService;
+            _orderBaseService = orderBaseService;
         }
 
         [Authorize]
@@ -27,8 +27,8 @@ namespace animalHairdresser.Controllers
             string name = HttpContext.User.FindFirst(ClaimTypes.Name).Value;
             string connString = HttpContext.User.FindFirst("connString").Value;
 
-            ViewBag.Orders = await OrderBaseService.GetOrderListAsync(HttpContext);
-            ViewBag.Animals = await ClientBaseService.SelectAnimalsFromClientAsync(connString, name);
+            ViewBag.Orders = await _orderBaseService.GetOrderListAsync(HttpContext);
+            ViewBag.Animals = await _clientBaseService.SelectAnimalsFromClientAsync(connString, name);
             ViewBag.Name = name;
 
             return View();
@@ -41,7 +41,7 @@ namespace animalHairdresser.Controllers
         {
             if (action == "DeleteOrder")
             {
-                await OrderBaseService.DeleteOrderAsync(dateTime, HttpContext);
+                await _orderBaseService.DeleteOrderAsync(dateTime, HttpContext);
                 return RedirectToAction("PersonalArea", "PersonalArea");
             }
 
@@ -50,7 +50,7 @@ namespace animalHairdresser.Controllers
                 string name = HttpContext.User.FindFirst(ClaimTypes.Name).Value;
                 string connString = HttpContext.User.FindFirst("connString").Value;
                 Animals animal = new Animals(kindOfAnimal, breed, animalName);
-                await ClientBaseService.DeleteAnimalAsync(connString, name, animal);
+                await _clientBaseService.DeleteAnimalAsync(connString, name, animal);
                 return RedirectToAction("PersonalArea", "PersonalArea");
             }
             

@@ -9,16 +9,16 @@ namespace animalHairdresser.Controllers
     [Authorize]
     public class CreateOrderController : Controller
     {
-        public IClientBaseService ClientBaseService { get; set; }
-        public IOrderBaseService OrderBaseService { get; set; }
-        public IAnimalsBreedsAndPriceService AnimalsBreedsAndPriceCervice { get; set; }
+        private readonly IClientBaseService _clientBaseService;
+        private readonly IOrderBaseService _orderBaseService;
+        public IAnimalsBreedsAndPriceService _animalsBreedsAndPriceCervice;
 
         public CreateOrderController(IClientBaseService clientBaseService, 
             IOrderBaseService orderBaseService, IAnimalsBreedsAndPriceService animalsBreedsAndPriceCervice)
         {
-            ClientBaseService = clientBaseService;
-            OrderBaseService = orderBaseService;
-            AnimalsBreedsAndPriceCervice = animalsBreedsAndPriceCervice;
+            _clientBaseService = clientBaseService;
+            _orderBaseService = orderBaseService;
+            _animalsBreedsAndPriceCervice = animalsBreedsAndPriceCervice;
         }
 
         [Route("StepOne")]
@@ -27,7 +27,7 @@ namespace animalHairdresser.Controllers
         public async Task<IActionResult> StepOne()
         {
             string connString = HttpContext.User.FindFirst("connString").Value;
-            List<string> kindOfAnimals = await AnimalsBreedsAndPriceCervice.KindOfAnimalsListAsync(connString);
+            List<string> kindOfAnimals = await _animalsBreedsAndPriceCervice.KindOfAnimalsListAsync(connString);
             return View(kindOfAnimals);
         }
 
@@ -66,7 +66,7 @@ namespace animalHairdresser.Controllers
         [Authorize]
         public async Task<IActionResult> StepTwo(DateOnly date, string phone, string kindOfAnimal)
         {
-            List<TimeOnly> time = await OrderBaseService.SelectFreeTimeFromDateTimeAsync(date, HttpContext);
+            List<TimeOnly> time = await _orderBaseService.SelectFreeTimeFromDateTimeAsync(date, HttpContext);
             ViewData["date"] = date;
             ViewData["phone"] = phone;
             ViewData["kindOfAnimal"] = kindOfAnimal;
@@ -91,7 +91,7 @@ namespace animalHairdresser.Controllers
         public async Task<IActionResult> StepThree(DateTime dateTime, string phone, string kindOfAnimal)
         {
             string connString = HttpContext.User.FindFirst("connString").Value;
-            List<string> breeds = await AnimalsBreedsAndPriceCervice.BreedFromKindOfAnimalsAsync(kindOfAnimal, connString);
+            List<string> breeds = await _animalsBreedsAndPriceCervice.BreedFromKindOfAnimalsAsync(kindOfAnimal, connString);
 
             ViewData["dateTime"] = dateTime;
             ViewData["phone"] = phone;
@@ -142,7 +142,7 @@ namespace animalHairdresser.Controllers
             ViewData["kindOfAnimal"] = kindOfAnimal;
             ViewData["animalBreed"] = breed;
             ViewData["animalName"] = animalName;
-            int price = await AnimalsBreedsAndPriceCervice.GetPriceAsync(kindOfAnimal, breed, connString);
+            int price = await _animalsBreedsAndPriceCervice.GetPriceAsync(kindOfAnimal, breed, connString);
             ViewData["price"] = price;
             return View();
         }
@@ -159,16 +159,16 @@ namespace animalHairdresser.Controllers
 
                 Order order = new Order(dateTime, name, phone, kindOfAnimal, animalName, breed, price);
 
-                await OrderBaseService.AddOrderBaseAsync(HttpContext.User.FindFirst("connString").Value, order);
+                await _orderBaseService.AddOrderBaseAsync(HttpContext.User.FindFirst("connString").Value, order);
 
-                if (!await ClientBaseService.ContainsClientAsync(name, connString))
-                    await ClientBaseService.AddClientListAsync(name, phone, connString);
+                if (!await _clientBaseService.ContainsClientAsync(name, connString))
+                    await _clientBaseService.AddClientListAsync(name, phone, connString);
 
-                await ClientBaseService.ChangePhoneAsync(connString, name, phone);
+                await _clientBaseService.ChangePhoneAsync(connString, name, phone);
 
                 Animals animal = new Animals(kindOfAnimal, breed, animalName);
-                if (!await ClientBaseService.ClientContainsAnimalsAsync(connString, name, animal))
-                    await ClientBaseService.AddAnimalToClientAsync(connString, name, animal);
+                if (!await _clientBaseService.ClientContainsAnimalsAsync(connString, name, animal))
+                    await _clientBaseService.AddAnimalToClientAsync(connString, name, animal);
 
             }
             catch (Exception) { return RedirectToAction("OrderNotMade", "CreateOrder"); }
