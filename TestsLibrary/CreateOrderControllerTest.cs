@@ -232,7 +232,7 @@ namespace TestsLibrary
 
             mockClientBaseService.Setup(_=>_.ContainsClientAsync("","")).Returns(new Task<bool>(()=>true));
             mockClientBaseService.Setup(_ => _.ChangePhoneAsync("", "", "")).Returns(new Task<bool>(() => true));
-            mockClientBaseService.Setup(_ => _.ClientContainsAnimalsAsync("", "", It.IsAny<Animals>())).Returns(new Task<bool>(() => true));
+            mockClientBaseService.Setup(_ => _.ClientContainsAnimalsAsync("", "", It.IsAny<Animal>())).Returns(new Task<bool>(() => true));
 
             mockOrderBaseService.Setup(_ => _.AddOrderBaseAsync("", It.IsAny<Order>())).Returns(new Task<bool>(() => true));
 

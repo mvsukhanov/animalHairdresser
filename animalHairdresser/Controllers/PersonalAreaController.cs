@@ -49,7 +49,7 @@ namespace animalHairdresser.Controllers
             {
                 string name = HttpContext.User.FindFirst(ClaimTypes.Name).Value;
                 string connString = HttpContext.User.FindFirst("connString").Value;
-                Animals animal = new Animals(kindOfAnimal, breed, animalName);
+                Animal animal = new Animal(kindOfAnimal, breed, animalName);
                 await _clientBaseService.DeleteAnimalAsync(connString, name, animal);
                 return RedirectToAction("PersonalArea", "PersonalArea");
             }

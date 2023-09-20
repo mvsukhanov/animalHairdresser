@@ -27,6 +27,7 @@ namespace animalHairdresser.Controllers
             {
                 try
                 {
+                    if (password is null) throw new Exception(); 
                     await _usersBaseService.CreateUserAsync(name, password);
                 }
                 catch (Exception) { return RedirectToAction("UserAlreadyExists", "CreateUser"); }

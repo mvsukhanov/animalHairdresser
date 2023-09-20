@@ -17,7 +17,7 @@ namespace animalHairdresser
         public const string connString = "Host=localhost;Username=Administrator;Port=5432;Password=123;Database=AnimalShop";
         static void Main(string[] args)
         {
-            NpgsqlConnection.GlobalTypeMapper.MapComposite<Animals>("animals", new NpgsqlNullNameTranslator());
+            NpgsqlConnection.GlobalTypeMapper.MapComposite<Animal>("animal", new NpgsqlNullNameTranslator());
 
             var builder = WebApplication.CreateBuilder(args);
 

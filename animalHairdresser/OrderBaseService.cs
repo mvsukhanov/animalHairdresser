@@ -35,7 +35,7 @@ namespace animalHairdresser
             await using (var conn = new NpgsqlConnection(connString))
             {
                 conn.Open();
-                string sqlCommand = string.Format("INSERT INTO orderList (orderdate, name, phone, kindOfAnimal, animalName, breed, price) " +
+                string sqlCommand = string.Format("INSERT INTO order_base (order_date, name, phone, kind_of_animal, animal_name, breed, price) " +
                     "VALUES ('{0}','{1}','{2}','{3}','{4}','{5}', {6})",
                     order.Date.ToString(), 
                     order.Name, 
@@ -61,7 +61,7 @@ namespace animalHairdresser
             {
                 conn.Open();
                 string sqlCommand = string.Format(
-                    @"select orderdate from orderlist where orderdate > '{0}' and orderdate < '{0}'::Date + 1", date);
+                    @"select order_date from order_base where order_date > '{0}' and order_date < '{0}'::Date + 1", date);
 
                 using (var command = new NpgsqlCommand(sqlCommand, conn))
                 {
@@ -84,7 +84,7 @@ namespace animalHairdresser
             {
 
                 conn.Open();
-                string sqlCommand = string.Format(@"Select * from orderlist where name = '{0}' and orderdate >= current_date",
+                string sqlCommand = string.Format(@"Select * from order_base where name = '{0}' and order_date >= current_date",
                     context.User.FindFirst(ClaimTypes.Name).Value);
 
                 using (var command = new NpgsqlCommand(sqlCommand, conn))
@@ -106,7 +106,7 @@ namespace animalHairdresser
             await using (var conn = new NpgsqlConnection(context.User.FindFirst("connString").Value))
             {
                 conn.Open();
-                string sqlCommand = string.Format(@"Delete from orderlist where name = '{0}' and orderdate = '{1}'",
+                string sqlCommand = string.Format(@"Delete from order_base where name = '{0}' and order_date = '{1}'",
                     context.User.FindFirst(ClaimTypes.Name).Value, dateTime);
 
                 using (var command = new NpgsqlCommand(sqlCommand, conn))

@@ -20,7 +20,7 @@ namespace animalHairdresser
             await using (var conn = new NpgsqlConnection(connString))
             {
                 conn.Open();
-                string sqlCommand = string.Format("INSERT INTO clientbase (name, phone) VALUES ('{0}', '{1}')", name, phone);
+                string sqlCommand = string.Format("INSERT INTO client_base (name, phone) VALUES ('{0}', '{1}')", name, phone);
 
                 using (var command = new NpgsqlCommand(sqlCommand, conn))
                 {
@@ -34,7 +34,7 @@ namespace animalHairdresser
             await using (var conn = new NpgsqlConnection(connString))
             {
                 conn.Open();
-                string sqlCommand = string.Format("SELECT * FROM clientbase WHERE name = '{0}'", name);
+                string sqlCommand = string.Format("SELECT * FROM client_base WHERE name = '{0}'", name);
 
                 using (var command = new NpgsqlCommand(sqlCommand, conn))
                 {
@@ -50,7 +50,7 @@ namespace animalHairdresser
             using (var conn = new NpgsqlConnection(connString))
             {
                 conn.Open();
-                string sqlCommand = string.Format("SELECT * FROM clientbase WHERE name = '{0}'", name);
+                string sqlCommand = string.Format("SELECT * FROM client_base WHERE name = '{0}'", name);
 
                 using (var command = new NpgsqlCommand(sqlCommand, conn))
                 {
@@ -61,13 +61,13 @@ namespace animalHairdresser
             }
         }
 
-        public async Task<bool> ClientContainsAnimalsAsync(string connString, string name, Animals animal)
+        public async Task<bool> ClientContainsAnimalsAsync(string connString, string name, Animal animal)
         {
             await using (var conn = new NpgsqlConnection(connString))
             {
                 conn.Open();
-                string sqlCommand = string.Format(@"SELECT ARRAY[CAST(('{0}', '{1}', '{2}') as animals)] <@ 
-                    (SELECT animals FROM clientbase WHERE name = '{3}')",
+                string sqlCommand = string.Format(@"SELECT ARRAY[CAST(('{0}', '{1}', '{2}') as animal)] <@ 
+                    (SELECT animals FROM client_base WHERE name = '{3}')",
                     animal.KindOfAnimal, animal.Breed, animal.AnimalName, name);
 
                 using (var command = new NpgsqlCommand(sqlCommand, conn))
@@ -81,13 +81,13 @@ namespace animalHairdresser
             }
         }
 
-        public async Task<Animals[]> SelectAnimalsFromClientAsync(string connString, string name)
+        public async Task<Animal[]> SelectAnimalsFromClientAsync(string connString, string name)
         {
-            Animals[] animals = {};
+            Animal[] animals = {};
             await using (var conn = new NpgsqlConnection(connString))
             {
                 conn.Open();
-                string sqlCommand = string.Format(@"SELECT animals FROM clientbase WHERE name = '{0}'", name);
+                string sqlCommand = string.Format(@"SELECT animals FROM client_base WHERE name = '{0}'", name);
 
                 using (var command = new NpgsqlCommand(sqlCommand, conn))
                 {
@@ -95,20 +95,20 @@ namespace animalHairdresser
                     while (reader.Read())
                     {
                         if (reader.IsDBNull(0)) continue;
-                        animals = reader.GetFieldValue<Animals[]>(0);
+                        animals = reader.GetFieldValue<Animal[]>(0);
                     }
                 }
             }
             return animals;
         }
 
-        public async Task DeleteAnimalAsync(string connString, string name, Animals animal)
+        public async Task DeleteAnimalAsync(string connString, string name, Animal animal)
         {
-            Animals[] animals = { };
+            Animal[] animals = { };
             await using (var conn = new NpgsqlConnection(connString))
             {
                 conn.Open();
-                string sqlCommand = string.Format(@"SELECT animals FROM clientbase WHERE name = '{0}'", name);
+                string sqlCommand = string.Format(@"SELECT animals FROM client_base WHERE name = '{0}'", name);
 
                 using (var command = new NpgsqlCommand(sqlCommand, conn))
                 {
@@ -116,14 +116,14 @@ namespace animalHairdresser
                     while (reader.Read())
                     {
                         if (reader.IsDBNull(0)) continue;
-                        animals = reader.GetFieldValue<Animals[]>(0);
+                        animals = reader.GetFieldValue<Animal[]>(0);
                     }
                 }
             }
 
             await using (var conn = new NpgsqlConnection(connString))
             {
-                string sqlCommand = string.Format(@"UPDATE clientbase SET animals = null WHERE name = '{0}'", name);
+                string sqlCommand = string.Format(@"UPDATE client_base SET animals = null WHERE name = '{0}'", name);
 
                 conn.Open();
                 using (var command = new NpgsqlCommand(sqlCommand, conn))
@@ -132,7 +132,7 @@ namespace animalHairdresser
                 }
             }
 
-            List<Animals> animalsList = animals.ToList();
+            List<Animal> animalsList = animals.ToList();
 
             for (int i = animalsList.Count - 1; i >= 0; i--)
             {
@@ -146,9 +146,9 @@ namespace animalHairdresser
                 conn.Open();
                 foreach (var item in animalsList)
                 {
-                    string sqlCommand = string.Format(@"UPDATE clientbase SET animals = 
-                    (SELECT animals FROM clientbase WHERE name = '{0}') || 
-                    CAST(('{1}','{2}','{3}') AS animals) WHERE name = '{0}'",
+                    string sqlCommand = string.Format(@"UPDATE client_base SET animals = 
+                    (SELECT animals FROM client_base WHERE name = '{0}') || 
+                    CAST(('{1}','{2}','{3}') AS animal) WHERE name = '{0}'",
                     name, item.KindOfAnimal, item.Breed, item.AnimalName);
 
                     using (var command = new NpgsqlCommand(sqlCommand, conn))
@@ -161,8 +161,8 @@ namespace animalHairdresser
             await using (var conn = new NpgsqlConnection(connString))
             {
                 string sqlCommand = string.Format(
-                    @"delete from orderlist where current_date < orderdate and 
-                    kindofanimal = '{0}' and breed = '{1}' and animalname='{2}'",
+                    @"delete from order_base where current_date < order_date and 
+                    kind_of_animal = '{0}' and breed = '{1}' and animal_name='{2}'",
                animal.KindOfAnimal, animal.Breed, animal.AnimalName);
 
                 conn.Open();
@@ -173,14 +173,14 @@ namespace animalHairdresser
             }
         }
 
-        public async Task AddAnimalToClientAsync(string connString, string name, Animals animal)
+        public async Task AddAnimalToClientAsync(string connString, string name, Animal animal)
         {
             await using (var conn = new NpgsqlConnection(connString))
             {
                 conn.Open();
-                string sqlCommand = string.Format(@"UPDATE clientbase SET animals = 
-                    (SELECT animals FROM clientbase WHERE name = '{0}') || 
-                    CAST(('{1}','{2}','{3}') AS animals) WHERE name = '{0}'",
+                string sqlCommand = string.Format(@"UPDATE client_base SET animals = 
+                    (SELECT animals FROM client_base WHERE name = '{0}') || 
+                    CAST(('{1}','{2}','{3}') AS animal) WHERE name = '{0}'",
                     name, animal.KindOfAnimal, animal.Breed, animal.AnimalName);
 
                 using (var command = new NpgsqlCommand(sqlCommand, conn))
@@ -196,7 +196,7 @@ namespace animalHairdresser
             {
 
                 conn.Open();
-                string sqlCommand = string.Format(@"update clientbase set phone = '{0}' where name = '{1}'",
+                string sqlCommand = string.Format(@"update client_base set phone = '{0}' where name = '{1}'",
                     phone, name);
 
                 using (var command = new NpgsqlCommand(sqlCommand, conn))

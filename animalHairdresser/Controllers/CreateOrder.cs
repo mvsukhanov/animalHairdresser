@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using animalHairdresser.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Npgsql;
 using System;
 using System.Security.Claims;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace animalHairdresser.Controllers
 {
@@ -21,6 +23,14 @@ namespace animalHairdresser.Controllers
             _animalsBreedsAndPriceCervice = animalsBreedsAndPriceCervice;
         }
 
+        //public async Task<IActionResult> CreateOrder()
+        //{
+        //    string connString = HttpContext.User.FindFirst("connString").Value;
+        //    CreateOrderViewModel createOrderViewModel = new CreateOrderViewModel();
+        //    createOrderViewModel.KindsOfAnimals = await _animalsBreedsAndPriceCervice.KindOfAnimalsListAsync(connString);
+        //    createOrderViewModel.FreeTime = await _orderBaseService.SelectFreeTimeFromDateTimeAsync(date, HttpContext);
+        //}
+
         [Route("StepOne")]
         [HttpGet]
         [Authorize]
@@ -30,7 +40,7 @@ namespace animalHairdresser.Controllers
             List<string> kindOfAnimals = await _animalsBreedsAndPriceCervice.KindOfAnimalsListAsync(connString);
             return View(kindOfAnimals);
         }
-
+        
         [Route("StepOne")]
         [HttpPost]
         [Authorize]
@@ -38,11 +48,11 @@ namespace animalHairdresser.Controllers
         {
             if (phone is null || DateTime.Now.AddDays(1) > date.ToDateTime(new TimeOnly(23,59)))
                 return RedirectToAction("StepOneError", "CreateOrder");
-
+        
             return RedirectToAction("StepTwo", "CreateOrder",
                 new {  date, phone, kindOfAnimal });
         }
-
+        
         [Route("StepOneError")]
         [HttpGet]
         [Authorize]
@@ -50,7 +60,7 @@ namespace animalHairdresser.Controllers
         {
             return View();
         }
-
+        
         [Route("StepOneError")]
         [HttpPost]
         [Authorize]
@@ -60,7 +70,7 @@ namespace animalHairdresser.Controllers
                 return RedirectToAction("StepOne", "CreateOrder");
             return RedirectToAction("Home", "Home");
         }
-
+        
         [Route("StepTwo")]
         [HttpGet]
         [Authorize]
@@ -72,19 +82,19 @@ namespace animalHairdresser.Controllers
             ViewData["kindOfAnimal"] = kindOfAnimal;
             return View(time);
         }
-
+        
         [Route("StepTwo")]
         [HttpPost]
         [Authorize]
         public IActionResult StepTwoPost(DateOnly date, TimeOnly time, string phone, string kindOfAnimal)
         {
             DateTime dateTime = date.ToDateTime(time);
-
+        
             return RedirectToAction("StepThree", "CreateOrder",
                 new { dateTime, phone, kindOfAnimal });
         }
-
-
+        
+        
         [Route("StepThree")]
         [HttpGet]
         [Authorize]
@@ -92,14 +102,14 @@ namespace animalHairdresser.Controllers
         {
             string connString = HttpContext.User.FindFirst("connString").Value;
             List<string> breeds = await _animalsBreedsAndPriceCervice.BreedFromKindOfAnimalsAsync(kindOfAnimal, connString);
-
+        
             ViewData["dateTime"] = dateTime;
             ViewData["phone"] = phone;
             ViewData["kindOfAnimal"] = kindOfAnimal;
-
+        
             return View(breeds);
         }
-
+        
         [Route("StepThree")]
         [HttpPost]
         [Authorize]
@@ -108,11 +118,11 @@ namespace animalHairdresser.Controllers
             if (animalName is null)
                 return RedirectToAction("StepThreeError", "CreateOrder",
                 new {dateTime, phone, kindOfAnimal });
-
+        
             return RedirectToAction("StepFour", "CreateOrder",
                 new {dateTime, phone, kindOfAnimal, breed, animalName });
         }
-
+        
         [Route("StepThreeError")]
         [HttpGet]
         [Authorize]
@@ -120,7 +130,7 @@ namespace animalHairdresser.Controllers
         {
             return View();
         }
-
+        
         [Route("StepThreeError")]
         [HttpPost]
         [Authorize]
@@ -129,8 +139,8 @@ namespace animalHairdresser.Controllers
             return RedirectToAction("StepThree", "CreateOrder",
                 new { dateTime, phone, kindOfAnimal });
         }
-
-
+        
+        
         [Route("StepFour")]
         [HttpGet]
         [Authorize]
@@ -146,7 +156,7 @@ namespace animalHairdresser.Controllers
             ViewData["price"] = price;
             return View();
         }
-
+        
         [Route("StepFour")]
         [HttpPost]
         [Authorize]
@@ -156,26 +166,26 @@ namespace animalHairdresser.Controllers
             {
                 string name = HttpContext.User.FindFirst(ClaimTypes.Name).Value;
                 string connString = HttpContext.User.FindFirst("connString").Value;
-
+        
                 Order order = new Order(dateTime, name, phone, kindOfAnimal, animalName, breed, price);
-
+        
                 await _orderBaseService.AddOrderBaseAsync(HttpContext.User.FindFirst("connString").Value, order);
-
+        
                 if (!await _clientBaseService.ContainsClientAsync(name, connString))
                     await _clientBaseService.AddClientListAsync(name, phone, connString);
-
+        
                 await _clientBaseService.ChangePhoneAsync(connString, name, phone);
-
-                Animals animal = new Animals(kindOfAnimal, breed, animalName);
+        
+                Animal animal = new Animal(kindOfAnimal, breed, animalName);
                 if (!await _clientBaseService.ClientContainsAnimalsAsync(connString, name, animal))
                     await _clientBaseService.AddAnimalToClientAsync(connString, name, animal);
-
+        
             }
             catch (Exception) { return RedirectToAction("OrderNotMade", "CreateOrder"); }
             
             return RedirectToAction("PersonalArea", "PersonalArea");
         }
-
+        
         [Route("OrderNotMade")]
         [HttpGet]
         [Authorize]
@@ -183,7 +193,7 @@ namespace animalHairdresser.Controllers
         {
             return View();
         }
-
+        
         [Route("OrderNotMade")]
         [HttpPost]
         [Authorize]
