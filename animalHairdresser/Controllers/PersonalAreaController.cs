@@ -63,9 +63,6 @@ namespace animalHairdresser.Controllers
             if (action == "MakeNewOrder")
                 return RedirectToAction("StepOne", "CreateOrder");
             
-            if (action == "Home")
-                return RedirectToAction("Home", "Home");
-            
             return RedirectToAction("PersonalArea", "PersonalArea");
         }
     }

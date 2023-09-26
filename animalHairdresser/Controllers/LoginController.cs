@@ -56,8 +56,7 @@ namespace animalHairdresser.Controllers
         [HttpPost]
         public IActionResult EmptyStringPost(string action)
         {
-            if (action == "Home")
-                return RedirectToAction("Home", "Home");
+
             if (action == "Login")
                 return RedirectToAction("Login", "Login");
             return RedirectToAction("EmptyString", "Login");
@@ -74,8 +73,6 @@ namespace animalHairdresser.Controllers
         [HttpPost]
         public IActionResult UserIsNotExistPost(string action)
         {
-            if (action == "Home")
-                return RedirectToAction("Home", "Home");
             if (action == "Login")
                 return RedirectToAction("Login", "Login");
             if (action == "CreateUser")

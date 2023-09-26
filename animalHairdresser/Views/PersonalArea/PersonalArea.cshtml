@@ -1,68 +1,64 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-</head>
-<body>
-    <h1>Личный кабинет @ViewBag.Name</h1>
-    <table>
-        <tr>Мои заказы</tr>
-        <tr>
-            <td>Дата</td>
-            <td>Телефон</td>
-            <td>Разновидность животного</td>
-            <td>Порода животного</td>
-            <td>Имя животного</td>
-            <td>Цена</td>
-        </tr>
-        @foreach (var order in ViewBag.Orders)
-        {
-            <tr>
-                <td>@order.Date </td>
-                <td>@order.Phone </td>
-                <td>@order.KindOfAnimal </td>
-                <td>@order.Breed </td>
-                <td>@order.AnimalName </td>
-                <td>@order.Price </td>
+﻿@{
+    Layout = "~/Views/_Layout.cshtml";
+}
 
-                <td>
-                    <form method="post">
-                        <input type="hidden" name="dateTime" value="@order.Date">
-                        <button type='submit' name="action" value="DeleteOrder">Удалить заказ</button>
-                    </form>
-                </td>
-            </tr>
-        }
-    </table>
-    <table>
-        <tr>Мои животные</tr>
+<p>Личный кабинет @ViewBag.Name</p>
+<form method="post">
+    <button class="Button" type='submit' name="action" value="Disconnect">Выйти из личного кабинета</button>
+    <button class="Button" type='submit' name="action" value="MakeNewOrder">Сделать заказ</button>
+</form>
+<table>
+    <p>Мои заказы</p>
+    <tr>
+        <td class = "TableHeader">Дата</td>
+        <td class = "TableHeader">Телефон</td>
+        <td class = "TableHeader">Разновидность<p>животного</p></td>
+        <td class = "TableHeader">Порода<p>животного</p></td>
+        <td class = "TableHeader">Имя <p>животного</p></td>
+        <td class = "TableHeader">Цена</td>
+    </tr>
+    @foreach (var order in ViewBag.Orders)
+    {
         <tr>
-            <td>Разновидность животного</td>
-            <td>Порода Животного</td>
-            <td>Имя животного</td>
-        </tr>
-        @foreach (var animal in ViewBag.Animals)
-        {
-            <tr>
-                <td>@animal.KindOfAnimal </td>
-                <td>@animal.Breed </td>
-                <td>@animal.AnimalName </td>
+            <td class = "Table">@order.Date </td>
+            <td class = "Table">@order.Phone </td>
+            <td class = "Table">@order.KindOfAnimal </td>
+            <td class = "Table">@order.Breed </td>
+            <td class = "Table">@order.AnimalName </td>
+            <td class = "Table">@order.Price </td>
 
-                <td>
-                    <form method="post">
-                        <input type="hidden" name="kindOfAnimal" value="@animal.KindOfAnimal">
-                        <input type="hidden" name="breed" value="@animal.Breed">
-                        <input type="hidden" name="animalName" value="@animal.AnimalName">
-                        <button type='submit' name="action" value="DeleteAnimal">Такого животного у меня нет</button>
-                    </form>
-                </td>
-            </tr>
-        }
-    </table>
-    <form method="post">
-        <button type='submit' name="action" value="Disconnect">Выйти из личного кабинета</button>
-        <button type='submit' name="action" value="MakeNewOrder">Сделать заказ</button>
-        <button type='submit' name="action" value="Home">Домашняя страница</button>
-    </form>
-</body>
-</html>
+            <td>
+                <form method="post">
+                    <input type="hidden" name="dateTime" value="@order.Date">
+                    <button class="Button" type='submit' name="action" value="DeleteOrder">Удалить заказ</button>
+                </form>
+            </td>
+        </tr>
+    }
+</table>
+<p>Мои животные</p>
+<table>
+    <tr>
+        <td class="TableHeader">Разновидность<p>животного</p></td>
+        <td class="TableHeader">Порода <p>животного</p></td>
+        <td class="TableHeader">Имя <p>животного</p></td>
+    </tr>
+    @foreach (var animal in ViewBag.Animals)
+    {
+        <tr>
+            <td class = "Table">@animal.KindOfAnimal </td>
+            <td class = "Table">@animal.Breed </td>
+            <td class = "Table">@animal.AnimalName </td>
+
+            <td>
+                <form method="post">
+                    <input type="hidden" name="kindOfAnimal" value="@animal.KindOfAnimal">
+                    <input type="hidden" name="breed" value="@animal.Breed">
+                    <input type="hidden" name="animalName" value="@animal.AnimalName">
+                    <button class="Button" type='submit' name="action" value="DeleteAnimal">Такого животного у меня нет</button>
+                </form>
+            </td>
+        </tr>
+    }
+</table>
+

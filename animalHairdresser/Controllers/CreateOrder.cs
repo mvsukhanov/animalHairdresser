@@ -1,8 +1,9 @@
-﻿using animalHairdresser.Models;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Npgsql;
 using System;
+using System.Numerics;
+using System.Runtime.Serialization;
 using System.Security.Claims;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -22,14 +23,6 @@ namespace animalHairdresser.Controllers
             _orderBaseService = orderBaseService;
             _animalsBreedsAndPriceCervice = animalsBreedsAndPriceCervice;
         }
-
-        //public async Task<IActionResult> CreateOrder()
-        //{
-        //    string connString = HttpContext.User.FindFirst("connString").Value;
-        //    CreateOrderViewModel createOrderViewModel = new CreateOrderViewModel();
-        //    createOrderViewModel.KindsOfAnimals = await _animalsBreedsAndPriceCervice.KindOfAnimalsListAsync(connString);
-        //    createOrderViewModel.FreeTime = await _orderBaseService.SelectFreeTimeFromDateTimeAsync(date, HttpContext);
-        //}
 
         [Route("StepOne")]
         [HttpGet]
@@ -192,16 +185,6 @@ namespace animalHairdresser.Controllers
         public IActionResult OrderNotMade()
         {
             return View();
-        }
-        
-        [Route("OrderNotMade")]
-        [HttpPost]
-        [Authorize]
-        public IActionResult OrderNotMadePost(string action)
-        {
-            if (action == "PersonalArea")
-                return RedirectToAction("PersonalArea", "PersonalArea");
-            return RedirectToAction("OrderNotMade", "PersonalArea");
         }
     }
 }

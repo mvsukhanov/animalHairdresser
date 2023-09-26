@@ -1,13 +1,8 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-</head>
-<body>
-    <h2>Такой пользователь уже существует</h2>
-    <form method="post">
-        <button type='submit' name="action" value="CreateUser">Попробовать еще</button>
-        <button type='submit' name="action" value="Home">Вернуться на главную</button>
-    </form>
-</body>
-</html>
+﻿@{
+    Layout = "~/Views/_Layout.cshtml";
+}
+
+<p>Такой пользователь уже существует или введены не корректные данные</p>
+<form method="post">
+    <button class = "Button" type='submit' name="action" value="CreateUser">Попробовать еще</button>
+</form>

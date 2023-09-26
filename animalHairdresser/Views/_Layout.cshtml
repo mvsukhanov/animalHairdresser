@@ -1,0 +1,25 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Парикмахерская для животных</title>
+    <link href="@Url.Content("~/Styles.css")" rel="stylesheet" />
+</head>
+<body>
+    <div class ="Master">
+        <div class="MasterTop">
+            <table>
+                <tr>
+                    <td><a class="RouteReferences" href="~/">Домашняя страница</a></td>
+                    <td><a class="RouteReferences" href="~/AboutCompany">О компании</a></td>
+                    <td><a class="RouteReferences" href="~/PersonalArea">Личный кабинет</a></td>
+                </tr>
+            </table>
+            <div class="DefaultStyle">
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+</body>
+</html>

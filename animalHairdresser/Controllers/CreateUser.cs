@@ -33,8 +33,6 @@ namespace animalHairdresser.Controllers
                 catch (Exception) { return RedirectToAction("UserAlreadyExists", "CreateUser"); }
                 return RedirectToAction("UserCreated", "CreateUser");
             }
-            if (action == "Home")
-                return RedirectToAction("Home", "Home");
 
             return RedirectToAction("CreateUser", "CreateUser");
         }
@@ -44,19 +42,6 @@ namespace animalHairdresser.Controllers
         public IActionResult UserCreated()
         {
             return View();
-        }
-
-        [Route("UserCreated")]
-        [HttpPost]
-        public IActionResult UserCreatedPost(string action)
-        {
-            if (action == "Home")
-                return RedirectToAction("Home", "Home");
-
-            if (action == "PersonalArea")
-                return RedirectToAction("PersonalArea", "PersonalArea");
-
-            return RedirectToAction("UserCreated", "PersonalArea");
         }
 
         [Route("UserAlreadyExists")]
@@ -74,12 +59,7 @@ namespace animalHairdresser.Controllers
             {
                 return RedirectToAction("CreateUser", "CreateUser");
             }
-            if (action == "Home")
-            {
-                return RedirectToAction("Home", "Home");
-            }
             return RedirectToAction("Home", "Home");
         }
-
     }
 }

@@ -1,12 +1,8 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-</head>
-<body>
-    <h2>Вы ввели некоректную дату или телефон</h2>
-    <form method="post">
-        <button type='submit' name="action" value="StepOne">Вернуться к созданию заказа</button>
-    </form>
-</body>
-</html>
+﻿@{
+    Layout = "~/Views/_Layout.cshtml";
+}
+
+<p>Вы ввели некоректную дату или телефон</p>
+<form method="post">
+    <button class="Button" type='submit' name="action" value="StepOne">Вернуться к созданию заказа</button>
+</form>

@@ -3,12 +3,12 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Npgsql;
-using Npgsql.NameTranslation;
 using System.Numerics;
 using System.Xml.Linq;
 using animalHairdresser.Controllers;
-using Microsoft.AspNetCore.HttpOverrides;
 using System.Net;
+using Npgsql.NameTranslation;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace animalHairdresser
 {
@@ -28,7 +28,7 @@ namespace animalHairdresser
 
             builder.Services.AddControllersWithViews();
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(options => options.LoginPath = "/AcessDenied");
+                .AddCookie(options => options.LoginPath = "/Login");
             builder.Services.AddAuthorization();
             
             builder.Services.Configure<ForwardedHeadersOptions>(options =>
@@ -45,6 +45,8 @@ namespace animalHairdresser
 
             app.UseAuthentication(); 
             app.UseAuthorization();
+
+            app.UseStaticFiles();
 
             app.MapControllerRoute(
                 name: "default",

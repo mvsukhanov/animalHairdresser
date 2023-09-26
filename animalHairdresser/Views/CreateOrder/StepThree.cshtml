@@ -1,30 +1,23 @@
-﻿@model List<string>
+﻿@{
+    Layout = "~/Views/_Layout.cshtml";
+}
 
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-</head>
-<body>
-    <h1>@ViewData["errorMessage"]</h1>
-    <h2>Шаг три</h2>
-    <h2>Введенное время: @ViewData["dateTime"]</h2>
-    <h2>Введенный телефон: @ViewData["phone"]</h3>
-    <h2>Введенная разновидность животного: @ViewData["kindOfAnimal"]</h3>
+<p>@ViewData["errorMessage"]</p>
+<p>Шаг три</p>
+<p>Введенное время: @ViewData["dateTime"]</p>
+<p>Введенный телефон: @ViewData["phone"]</p>
+<p>Введенная разновидность животного: @ViewData["kindOfAnimal"]</p>
 
-    <form method='post'>
-        <label for="breed">Порода животного:</label>
-        <select input type="text" name="breed">
-            @foreach (var breed in Model)
-            {
-                <option value=@breed>@breed</option>
-            }
-        </select>
-        <br /><label>Имя животного:</label>
-        <input type="text" name='animalName' /><br />
+<form method='post'>
+    <label for="breed">Порода животного:</label>
+    <select class="Input" input type="text" name="breed">
+        @foreach (var breed in Model)
+        {
+            <option value=@breed>@breed</option>
+        }
+    </select>
+    <br /><label>Имя животного:</label>
+    <input class="Input" type="text" name='animalName' /><br />
 
-        <input type='submit' value='Отправить запрос' />
-    </form>
-
-</body>
-</html>
+    <button class="Button" type='submit'>Отправить запрос</button>
+</form>

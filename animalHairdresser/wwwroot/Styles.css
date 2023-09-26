@@ -1,0 +1,83 @@
+﻿.Master{
+    display: flex;
+    justify-content: center;
+}
+
+.MasterTop {
+
+    padding: 10px;
+    font-size: 24px;
+    font-family: 'Brush Script MT', cursive;
+
+    align-self: center;
+    position: relative;
+}
+
+.DefaultStyle{
+    text-align: left;
+    font-size: 32px;
+    font-family: 'Brush Script MT', cursive;
+
+    align-self: center;
+
+    position: relative;
+
+    min-height: 700px;
+}
+
+.RouteReferences{
+    text-decoration: none;
+
+    display: block;
+    margin-left: 5px;
+    padding: 10px;  
+
+    text-align: center;
+
+    border-width: 0px;
+    border-style: solid;
+    border-color: black;
+    border-radius: 10px;
+
+    background-image: linear-gradient(15deg, #92f0aa, green);
+}
+.RouteReferences:hover{
+    transform: scale(1.05);
+}
+
+.Button {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    padding: 20px 20px;
+    text-align: center;
+    font-size: 24px;
+    font-family: 'Brush Script MT', cursive;
+}
+.Button:hover{
+    transform: scale(1.05);
+}
+
+.Date{
+    font-size: 24px;
+}
+
+.Input{
+    font-size: 24px;
+}
+
+.Table{
+    border-style: solid;
+    border-width: 1px;
+    font-size: 16px;
+    text-align: center;
+}
+
+.TableHeader{
+    border-style: solid;
+    border-width: 1px;
+    font-size: 18px;
+    text-align: center;
+}
+
+
+

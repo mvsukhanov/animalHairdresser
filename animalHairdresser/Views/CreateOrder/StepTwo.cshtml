@@ -1,27 +1,20 @@
-﻿@model List<TimeOnly>
+﻿@{
+    Layout = "~/Views/_Layout.cshtml";
+}
+@model List<TimeOnly>
 
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-</head>
-<body>
-    <h2>Шаг два</h2>
-    <h2>Введенное время: @ViewData["date"]</h2>
-    <h2>Введенный телефон: @ViewData["phone"]</h2>
-    <h2>Введенная разновидность животного: @ViewData["kindOfAnimal"]</h2>
+<p>Шаг два</p>
+<p>Введенное время: @ViewData["date"]</p>
+<p>Введенный телефон: @ViewData["phone"]</p>
+<p>Введенная разновидность животного: @ViewData["kindOfAnimal"]</p>
 
-    <form method='post'>
-        <label for="time">Выберите время:</label>
-        <select input type="text" name="time">
-            @foreach (var breed in Model)
-            {
-                <option value=@breed>@breed</option>
-            }
-        </select>
-
-        <input type='submit' value='Отправить запрос' />
-    </form>
-
-</body>
-</html>
+<form method='post'>
+    <label for="time">Выберите время:</label>
+    <select class="Input" input type="text" name="time">
+        @foreach (var breed in Model)
+        {
+            <option value=@breed>@breed</option>
+        }
+    </select>
+    <button class="Button" type='submit'>Отправить запрос</button>
+</form>
