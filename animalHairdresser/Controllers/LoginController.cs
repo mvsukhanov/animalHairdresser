@@ -7,11 +7,11 @@ namespace animalHairdresser.Controllers
 {
     public class LoginController : Controller
     {
-        private readonly IUserBaseService _usersBaseService;
+        private readonly IClientBaseService _clientBaseService;
 
-        public LoginController(IUserBaseService userBaseService)
+        public LoginController(IClientBaseService clientBaseService)
         {
-            _usersBaseService = userBaseService;
+            _clientBaseService = clientBaseService;
         }
 
         [Route("Login")]
@@ -31,14 +31,13 @@ namespace animalHairdresser.Controllers
             if (name == null || password == null)
                 return RedirectToAction("EmptyString", "Login");
 
-            string connString = String.Format("Host=localhost;Username={0};Port=5432;Password={1};Database=AnimalShop", name, password);
             try
             {
-                await _usersBaseService.UserExistsOrNotAsync(connString);
+                await _clientBaseService.UserExistsOrNotAsync(name, password);
             }
             catch { return RedirectToAction("UserIsNotExist", "Login"); }
             
-            var claims = new List<Claim> { new Claim(ClaimTypes.Name, name), new Claim("connString", connString) };
+            var claims = new List<Claim> { new Claim(ClaimTypes.Name, name)};
             ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, "Cookies");
             
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));

@@ -6,11 +6,11 @@ namespace animalHairdresser.Controllers
 {
     public class CreateUserController : Controller
     {
-        private readonly IUserBaseService _usersBaseService;
+        private readonly IClientBaseService _clientBaseService;
 
-        public CreateUserController(IUserBaseService userBaseService)
+        public CreateUserController(IClientBaseService clientBaseService)
         {
-            _usersBaseService = userBaseService;
+            _clientBaseService = clientBaseService;
         }
 
         [Route("CreateUser")]
@@ -28,7 +28,7 @@ namespace animalHairdresser.Controllers
                 try
                 {
                     if (password is null) throw new Exception(); 
-                    await _usersBaseService.CreateUserAsync(name, password);
+                    await _clientBaseService.CreateUserAsync(name, password);
                 }
                 catch (Exception) { return RedirectToAction("UserAlreadyExists", "CreateUser"); }
                 return RedirectToAction("UserCreated", "CreateUser");

@@ -57,20 +57,13 @@ namespace TestsLibrary
             return new List<string> { "овчарка", "Той_терьер" };
         }
 
-        Task<int> TaskInteger = new Task<int>(() => ReturnInt());
-        
-        public static int ReturnInt()
-        {
-            return 1;
-        }
-
         [Test]
         public void StepOneTest()
         {
             //arrange
             var mockAnimalsBreedsAndPrice = new Mock<IAnimalsBreedsAndPriceService>();
             mockAnimalsBreedsAndPrice.Setup(AnimalsBreedsAndPrice =>
-                AnimalsBreedsAndPrice.KindOfAnimalsListAsync("")).Returns(TaskForStepOne);
+                AnimalsBreedsAndPrice.KindOfAnimalsListAsync()).Returns(TaskForStepOne);
             
             var controller = new CreateOrderController(new ClientBaseService(),
                 new OrderBaseService(), mockAnimalsBreedsAndPrice.Object);
@@ -128,7 +121,7 @@ namespace TestsLibrary
             var mockOrderBaseService =new Mock<IOrderBaseService>();
 
             mockOrderBaseService.Setup(OrderBaseService =>
-                OrderBaseService.SelectFreeTimeFromDateTimeAsync(DateOnly.FromDateTime(DateTime.Now), It.IsAny<HttpContext>())).
+                OrderBaseService.SelectFreeTimeFromDateTimeAsync(DateOnly.FromDateTime(DateTime.Now))).
                     Returns(taskForStepTwo);
             var controller = new CreateOrderController(new ClientBaseService(),
                mockOrderBaseService.Object, new AnimalsBreedsAndPriceCervice());
@@ -156,7 +149,7 @@ namespace TestsLibrary
             //arrange
             var mockAnimalsBreedsAndPrice = new Mock<IAnimalsBreedsAndPriceService>();
             mockAnimalsBreedsAndPrice.Setup(AnimalsBreedsAndPrice =>
-                AnimalsBreedsAndPrice.BreedFromKindOfAnimalsAsync("пес", "")).Returns(TaskForStepThree);
+                AnimalsBreedsAndPrice.BreedFromKindOfAnimalsAsync("пес")).Returns(TaskForStepThree);
         
             var controller = new CreateOrderController(new ClientBaseService(),
                 new OrderBaseService(), mockAnimalsBreedsAndPrice.Object);
@@ -209,10 +202,8 @@ namespace TestsLibrary
         public void StepFourTest() 
         {
             //arrange
-            int price = 1;
             var mockAnimalsBreedsAndPrice = new Mock<IAnimalsBreedsAndPriceService>();
-            mockAnimalsBreedsAndPrice.Setup(AnimalsBreedsAndPrice =>
-                AnimalsBreedsAndPrice.GetPriceAsync("пес", "овчарка", "")).Returns(TaskInteger);
+            mockAnimalsBreedsAndPrice.Setup(_ =>_.GetPriceAsync("пес", "овчарка")).Returns(new Task<int>(() => 1));
 
             var controller = new CreateOrderController(new ClientBaseService(),
                 new OrderBaseService(), mockAnimalsBreedsAndPrice.Object);
@@ -230,21 +221,19 @@ namespace TestsLibrary
             var mockOrderBaseService = new Mock<IOrderBaseService>();
             var mockAnimalsBreedsAndPrice = new Mock<IAnimalsBreedsAndPriceService>();
 
-            mockClientBaseService.Setup(_=>_.ContainsClientAsync("","")).Returns(new Task<bool>(()=>true));
-            mockClientBaseService.Setup(_ => _.ChangePhoneAsync("", "", "")).Returns(new Task<bool>(() => true));
-            mockClientBaseService.Setup(_ => _.ClientContainsAnimalsAsync("", "", It.IsAny<Animal>())).Returns(new Task<bool>(() => true));
+            mockOrderBaseService.Setup(_ => _.AddOrderBaseAsync(It.IsAny<Order>())).Returns(new Task<bool>(() => true));
 
-            mockOrderBaseService.Setup(_ => _.AddOrderBaseAsync("", It.IsAny<Order>())).Returns(new Task<bool>(() => true));
+            mockClientBaseService.Setup(_=>_.ContainsClientAsync("")).Returns(new Task<bool>(()=>true));
+            mockClientBaseService.Setup(_ => _.ChangePhoneAsync("", "")).Returns(new Task<bool>(() => true));
+            mockClientBaseService.Setup(_ => _.ClientContainsAnimalsAsync("", It.IsAny<Animal>())).Returns(new Task<bool>(() => true));
 
             var controller = new CreateOrderController(mockClientBaseService.Object,
                mockOrderBaseService.Object, mockAnimalsBreedsAndPrice.Object);
 
-
             //устанавливаю значения Claim
             var claims = new List<Claim>()
             {
-                new Claim(ClaimTypes.Name, "TestUser"),
-                new Claim("connString", "Host=localhost;Username=Administrator;Port=5432;Password=123;Database=AnimalShop"),
+                new Claim(ClaimTypes.Name, "TestUser")
             };
             ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, "Cookies");
             
@@ -271,17 +260,6 @@ namespace TestsLibrary
             var result = controller.OrderNotMade();
 
             Assert.AreEqual("Microsoft.AspNetCore.Mvc.ViewResult", result.ToString());
-        }
-
-        [Test]
-        public void OrderNotMadePostTest()
-        {
-            var controller = new CreateOrderController(new ClientBaseService(),
-                new OrderBaseService(), new AnimalsBreedsAndPriceCervice());
-
-            var result = (RedirectToActionResult)controller.OrderNotMadePost("PersonalArea");
-
-            Assert.AreEqual("PersonalArea", result.ActionName);
         }
     }
 }

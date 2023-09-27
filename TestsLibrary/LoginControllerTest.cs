@@ -21,7 +21,7 @@ namespace TestsLibrary
         [Test]
         public void LoginPostAsyncTestWhenPressCreateUser()
         {
-            var controller = new LoginController(new UsersBaseService());
+            var controller = new LoginController(new ClientBaseService());
 
             var result = (RedirectToActionResult)controller.LoginPostAsync("", "", "CreateUser").Result;
             
@@ -31,30 +31,28 @@ namespace TestsLibrary
         [Test]
         public void LoginPostAsyncTestIfEmptyString()
         {
-            var controller = new LoginController(new UsersBaseService());
+            var controller = new LoginController(new ClientBaseService());
         
             var result = (RedirectToActionResult)controller.LoginPostAsync(null, null, "Login").Result;
         
             Assert.AreEqual("EmptyString", result.ActionName);
         }
 
-        [TestCase("Home")]
         [TestCase("Login")]
         public void EmptyStringPostTest(string action)
         {
-            var controller = new LoginController(new UsersBaseService());
+            var controller = new LoginController(new ClientBaseService());
 
             var result = (RedirectToActionResult)controller.EmptyStringPost(action);
 
             Assert.AreEqual(action, result.ActionName);
         }
 
-        [TestCase("Home")]
         [TestCase("Login")]
         [TestCase("CreateUser")]
         public void UserIsNotExistPostTest(string action)
         {
-            var controller = new LoginController(new UsersBaseService());
+            var controller = new LoginController(new ClientBaseService());
 
             var result = (RedirectToActionResult)controller.UserIsNotExistPost(action);
 

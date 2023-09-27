@@ -17,8 +17,8 @@ namespace TestsLibrary
         [Test]
         public void CreateUserPostTestAsTask()
         {
-            var mockUserBaseService = new Mock<IUserBaseService>();
-            var controller = new CreateUserController(mockUserBaseService.Object);
+            var mockClientBaseService = new Mock<IClientBaseService>();
+            var controller = new CreateUserController(mockClientBaseService.Object);
 
             var result = controller.CreateUserPostAsync("", "", "");
 
@@ -26,21 +26,10 @@ namespace TestsLibrary
         }
 
         [TestCase("Home")]
-        [TestCase("PersonalArea")]
-        public void UserCreatedPostTest(string action)
-        {
-            var controller = new CreateUserController(new UsersBaseService());
-
-            var result = (RedirectToActionResult)controller.UserCreatedPost(action);
-
-            Assert.AreEqual(action, result.ActionName);
-        }
-
-        [TestCase("Home")]
         [TestCase("CreateUser")]
         public void UserAlreadyExistsPostTest(string action)
         {
-            var controller = new CreateUserController(new UsersBaseService());
+            var controller = new CreateUserController(new ClientBaseService());
 
             var result = (RedirectToActionResult)controller.UserAlreadyExistsPost(action);
 

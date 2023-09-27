@@ -5,9 +5,9 @@ namespace animalHairdresser
 {
     public interface IOrderBaseService
     {
-        public Task<bool> AddOrderBaseAsync(string connString, Order order);
-        public Task<List<TimeOnly>> SelectFreeTimeFromDateTimeAsync(DateOnly date, HttpContext context);
-        public Task<List<Order>> GetOrderListAsync(HttpContext context);
-        public Task DeleteOrderAsync(DateTime dateTime, HttpContext context);
+        public Task<bool> AddOrderBaseAsync(Order order);
+        public Task<List<TimeOnly>> SelectFreeTimeFromDateTimeAsync(DateOnly date);
+        public Task<List<Order>> GetOrderListAsync(string name);
+        public Task DeleteOrderAsync(DateTime dateTime, string name);
     }
 }

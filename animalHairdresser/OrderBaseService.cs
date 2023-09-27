@@ -30,9 +30,9 @@ namespace animalHairdresser
             new TimeOnly(16, 30)
         };
 
-        public async Task<bool> AddOrderBaseAsync(string connString, Order order)
+        public async Task<bool> AddOrderBaseAsync(Order order)
         {
-            await using (var conn = new NpgsqlConnection(connString))
+            await using (var conn = new NpgsqlConnection(Program.connString))
             {
                 conn.Open();
                 string sqlCommand = string.Format("INSERT INTO order_base (order_date, name, phone, kind_of_animal, animal_name, breed, price) " +
@@ -53,11 +53,11 @@ namespace animalHairdresser
             return true;
         }
 
-        public async Task<List<TimeOnly>> SelectFreeTimeFromDateTimeAsync(DateOnly date, HttpContext context)
+        public async Task<List<TimeOnly>> SelectFreeTimeFromDateTimeAsync(DateOnly date)
         {
             List<TimeOnly> mabyTimes = AllMabyTimes;
 
-            await using (var conn = new NpgsqlConnection(context.User.FindFirst("connString").Value))
+            await using (var conn = new NpgsqlConnection(Program.connString))
             {
                 conn.Open();
                 string sqlCommand = string.Format(
@@ -76,16 +76,16 @@ namespace animalHairdresser
             return mabyTimes;
         }
 
-        public async Task<List<Order>> GetOrderListAsync(HttpContext context)
+        public async Task<List<Order>> GetOrderListAsync(string name)
         {
             List<Order> orders = new List<Order>();
 
-            await using (var conn = new NpgsqlConnection(context.User.FindFirst("connString").Value))
+            await using (var conn = new NpgsqlConnection(Program.connString))
             {
 
                 conn.Open();
                 string sqlCommand = string.Format(@"Select * from order_base where name = '{0}' and order_date >= current_date",
-                    context.User.FindFirst(ClaimTypes.Name).Value);
+                    name);
 
                 using (var command = new NpgsqlCommand(sqlCommand, conn))
                 {
@@ -101,13 +101,13 @@ namespace animalHairdresser
             return orders;
         }
 
-        public async Task DeleteOrderAsync(DateTime dateTime, HttpContext context)
+        public async Task DeleteOrderAsync(DateTime dateTime, string name)
         {
-            await using (var conn = new NpgsqlConnection(context.User.FindFirst("connString").Value))
+            await using (var conn = new NpgsqlConnection(Program.connString))
             {
                 conn.Open();
                 string sqlCommand = string.Format(@"Delete from order_base where name = '{0}' and order_date = '{1}'",
-                    context.User.FindFirst(ClaimTypes.Name).Value, dateTime);
+                    name, dateTime);
 
                 using (var command = new NpgsqlCommand(sqlCommand, conn))
                 {

@@ -25,10 +25,9 @@ namespace animalHairdresser.Controllers
         public async Task<IActionResult> PersonalArea()
         {
             string name = HttpContext.User.FindFirst(ClaimTypes.Name).Value;
-            string connString = HttpContext.User.FindFirst("connString").Value;
 
-            ViewBag.Orders = await _orderBaseService.GetOrderListAsync(HttpContext);
-            ViewBag.Animals = await _clientBaseService.SelectAnimalsFromClientAsync(connString, name);
+            ViewBag.Orders = await _orderBaseService.GetOrderListAsync(name);
+            ViewBag.Animals = await _clientBaseService.SelectAnimalsFromClientAsync(name);
             ViewBag.Name = name;
 
             return View();
@@ -39,18 +38,17 @@ namespace animalHairdresser.Controllers
         [HttpPost]
         public async Task<IActionResult> PersonalAreaPost(DateTime dateTime, string kindOfAnimal, string breed, string animalName, string action)
         {
+            string name = HttpContext.User.FindFirst(ClaimTypes.Name).Value;
             if (action == "DeleteOrder")
             {
-                await _orderBaseService.DeleteOrderAsync(dateTime, HttpContext);
+                await _orderBaseService.DeleteOrderAsync(dateTime, name);
                 return RedirectToAction("PersonalArea", "PersonalArea");
             }
 
             if (action == "DeleteAnimal")
             {
-                string name = HttpContext.User.FindFirst(ClaimTypes.Name).Value;
-                string connString = HttpContext.User.FindFirst("connString").Value;
                 Animal animal = new Animal(kindOfAnimal, breed, animalName);
-                await _clientBaseService.DeleteAnimalAsync(connString, name, animal);
+                await _clientBaseService.DeleteAnimalAsync(name, animal);
                 return RedirectToAction("PersonalArea", "PersonalArea");
             }
             

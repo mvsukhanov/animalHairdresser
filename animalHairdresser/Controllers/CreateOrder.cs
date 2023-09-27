@@ -29,8 +29,7 @@ namespace animalHairdresser.Controllers
         [Authorize]
         public async Task<IActionResult> StepOne()
         {
-            string connString = HttpContext.User.FindFirst("connString").Value;
-            List<string> kindOfAnimals = await _animalsBreedsAndPriceCervice.KindOfAnimalsListAsync(connString);
+            List<string> kindOfAnimals = await _animalsBreedsAndPriceCervice.KindOfAnimalsListAsync();
             return View(kindOfAnimals);
         }
         
@@ -69,7 +68,7 @@ namespace animalHairdresser.Controllers
         [Authorize]
         public async Task<IActionResult> StepTwo(DateOnly date, string phone, string kindOfAnimal)
         {
-            List<TimeOnly> time = await _orderBaseService.SelectFreeTimeFromDateTimeAsync(date, HttpContext);
+            List<TimeOnly> time = await _orderBaseService.SelectFreeTimeFromDateTimeAsync(date);
             ViewData["date"] = date;
             ViewData["phone"] = phone;
             ViewData["kindOfAnimal"] = kindOfAnimal;
@@ -93,8 +92,7 @@ namespace animalHairdresser.Controllers
         [Authorize]
         public async Task<IActionResult> StepThree(DateTime dateTime, string phone, string kindOfAnimal)
         {
-            string connString = HttpContext.User.FindFirst("connString").Value;
-            List<string> breeds = await _animalsBreedsAndPriceCervice.BreedFromKindOfAnimalsAsync(kindOfAnimal, connString);
+            List<string> breeds = await _animalsBreedsAndPriceCervice.BreedFromKindOfAnimalsAsync(kindOfAnimal);
         
             ViewData["dateTime"] = dateTime;
             ViewData["phone"] = phone;
@@ -139,13 +137,12 @@ namespace animalHairdresser.Controllers
         [Authorize]
         public async Task<IActionResult> StepFour(DateTime dateTime, string phone, string kindOfAnimal, string breed, string animalName)
         {
-            string connString = HttpContext.User.FindFirst("connString").Value;
             ViewData["dateTime"] = dateTime;
             ViewData["phone"] = phone;
             ViewData["kindOfAnimal"] = kindOfAnimal;
             ViewData["animalBreed"] = breed;
             ViewData["animalName"] = animalName;
-            int price = await _animalsBreedsAndPriceCervice.GetPriceAsync(kindOfAnimal, breed, connString);
+            int price = await _animalsBreedsAndPriceCervice.GetPriceAsync(kindOfAnimal, breed);
             ViewData["price"] = price;
             return View();
         }
@@ -158,20 +155,20 @@ namespace animalHairdresser.Controllers
             try
             {
                 string name = HttpContext.User.FindFirst(ClaimTypes.Name).Value;
-                string connString = HttpContext.User.FindFirst("connString").Value;
         
                 Order order = new Order(dateTime, name, phone, kindOfAnimal, animalName, breed, price);
+
+                await _orderBaseService.AddOrderBaseAsync(order);
+
+                if (!await _clientBaseService.ContainsClientAsync(name))
+                    await _clientBaseService.AddClientListAsync(name, phone);
         
-                await _orderBaseService.AddOrderBaseAsync(HttpContext.User.FindFirst("connString").Value, order);
-        
-                if (!await _clientBaseService.ContainsClientAsync(name, connString))
-                    await _clientBaseService.AddClientListAsync(name, phone, connString);
-        
-                await _clientBaseService.ChangePhoneAsync(connString, name, phone);
+                await _clientBaseService.ChangePhoneAsync(name, phone);
         
                 Animal animal = new Animal(kindOfAnimal, breed, animalName);
-                if (!await _clientBaseService.ClientContainsAnimalsAsync(connString, name, animal))
-                    await _clientBaseService.AddAnimalToClientAsync(connString, name, animal);
+
+                if (!await _clientBaseService.ClientContainsAnimalsAsync(name, animal))
+                    await _clientBaseService.AddAnimalToClientAsync(name, animal);
         
             }
             catch (Exception) { return RedirectToAction("OrderNotMade", "CreateOrder"); }

@@ -14,14 +14,13 @@ namespace animalHairdresser
 {
     internal class Program
     {
-        public const string connString = "Host=localhost;Username=Administrator;Port=5432;Password=123;Database=AnimalShop";
+        public const string connString = "Host=localhost;Username=users;Port=5432;Password=12345;Database=AnimalShop";
         static void Main(string[] args)
         {
             NpgsqlConnection.GlobalTypeMapper.MapComposite<Animal>("animal", new NpgsqlNullNameTranslator());
 
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddTransient<IUserBaseService, UsersBaseService>();
             builder.Services.AddTransient<IClientBaseService, ClientBaseService>();
             builder.Services.AddTransient<IOrderBaseService, OrderBaseService>();
             builder.Services.AddTransient<IAnimalsBreedsAndPriceService, AnimalsBreedsAndPriceCervice>();

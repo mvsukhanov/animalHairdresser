@@ -4,6 +4,7 @@ using NpgsqlTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,12 +16,13 @@ namespace animalHairdresser
     public class ClientBaseService : IClientBaseService
     {
         
-        public async Task AddClientListAsync(string name, string phone, string connString)
+        public async Task AddClientListAsync(string name, string phone)
         {
-            await using (var conn = new NpgsqlConnection(connString))
+            await using (var conn = new NpgsqlConnection(Program.connString))
             {
                 conn.Open();
-                string sqlCommand = string.Format("INSERT INTO client_base (name, phone) VALUES ('{0}', '{1}')", name, phone);
+                string sqlCommand = string.Format(
+                    "INSERT INTO client_base (phone) VALUES ('{1}') WHERE name = '{0}'", name, phone);
 
                 using (var command = new NpgsqlCommand(sqlCommand, conn))
                 {
@@ -29,9 +31,9 @@ namespace animalHairdresser
             }
         }
 
-        public async Task<bool> ContainsClientAsync(string name, string connString)
+        public async Task<bool> ContainsClientAsync(string name)
         {
-            await using (var conn = new NpgsqlConnection(connString))
+            await using (var conn = new NpgsqlConnection(Program.connString))
             {
                 conn.Open();
                 string sqlCommand = string.Format("SELECT * FROM client_base WHERE name = '{0}'", name);
@@ -45,9 +47,9 @@ namespace animalHairdresser
             }
         }
 
-        public int returnIdClient(string name, string connString)
+        public int returnIdClient(string name)
         {
-            using (var conn = new NpgsqlConnection(connString))
+            using (var conn = new NpgsqlConnection(Program.connString))
             {
                 conn.Open();
                 string sqlCommand = string.Format("SELECT * FROM client_base WHERE name = '{0}'", name);
@@ -61,9 +63,9 @@ namespace animalHairdresser
             }
         }
 
-        public async Task<bool> ClientContainsAnimalsAsync(string connString, string name, Animal animal)
+        public async Task<bool> ClientContainsAnimalsAsync(string name, Animal animal)
         {
-            await using (var conn = new NpgsqlConnection(connString))
+            await using (var conn = new NpgsqlConnection(Program.connString))
             {
                 conn.Open();
                 string sqlCommand = string.Format(@"SELECT ARRAY[CAST(('{0}', '{1}', '{2}') as animal)] <@ 
@@ -81,10 +83,10 @@ namespace animalHairdresser
             }
         }
 
-        public async Task<Animal[]> SelectAnimalsFromClientAsync(string connString, string name)
+        public async Task<Animal[]> SelectAnimalsFromClientAsync(string name)
         {
             Animal[] animals = {};
-            await using (var conn = new NpgsqlConnection(connString))
+            await using (var conn = new NpgsqlConnection(Program.connString))
             {
                 conn.Open();
                 string sqlCommand = string.Format(@"SELECT animals FROM client_base WHERE name = '{0}'", name);
@@ -102,10 +104,10 @@ namespace animalHairdresser
             return animals;
         }
 
-        public async Task DeleteAnimalAsync(string connString, string name, Animal animal)
+        public async Task DeleteAnimalAsync(string name, Animal animal)
         {
             Animal[] animals = { };
-            await using (var conn = new NpgsqlConnection(connString))
+            await using (var conn = new NpgsqlConnection(Program.connString))
             {
                 conn.Open();
                 string sqlCommand = string.Format(@"SELECT animals FROM client_base WHERE name = '{0}'", name);
@@ -121,7 +123,7 @@ namespace animalHairdresser
                 }
             }
 
-            await using (var conn = new NpgsqlConnection(connString))
+            await using (var conn = new NpgsqlConnection(Program.connString))
             {
                 string sqlCommand = string.Format(@"UPDATE client_base SET animals = null WHERE name = '{0}'", name);
 
@@ -141,7 +143,7 @@ namespace animalHairdresser
                     animalsList.Remove(animalsList[i]);
             }
 
-            await using (var conn = new NpgsqlConnection(connString))
+            await using (var conn = new NpgsqlConnection(Program.connString))
             {
                 conn.Open();
                 foreach (var item in animalsList)
@@ -158,7 +160,7 @@ namespace animalHairdresser
                 }
             }
             //Если удаляем животное, то и удаляем все заказы в будующем с эти животным
-            await using (var conn = new NpgsqlConnection(connString))
+            await using (var conn = new NpgsqlConnection(Program.connString))
             {
                 string sqlCommand = string.Format(
                     @"delete from order_base where current_date < order_date and 
@@ -173,9 +175,9 @@ namespace animalHairdresser
             }
         }
 
-        public async Task AddAnimalToClientAsync(string connString, string name, Animal animal)
+        public async Task AddAnimalToClientAsync(string name, Animal animal)
         {
-            await using (var conn = new NpgsqlConnection(connString))
+            await using (var conn = new NpgsqlConnection(Program.connString))
             {
                 conn.Open();
                 string sqlCommand = string.Format(@"UPDATE client_base SET animals = 
@@ -190,9 +192,9 @@ namespace animalHairdresser
             }
         }
 
-        public async Task<bool> ChangePhoneAsync(string connString, string name, string phone)
+        public async Task<bool> ChangePhoneAsync(string name, string phone)
         {
-            await using (var conn = new NpgsqlConnection(connString))
+            await using (var conn = new NpgsqlConnection(Program.connString))
             {
 
                 conn.Open();
@@ -205,6 +207,37 @@ namespace animalHairdresser
                 }
             }
             return true;
+        }
+        public async Task CreateUserAsync(string name, string password)
+        {
+            await using (var conn = new NpgsqlConnection(Program.connString))
+            {
+                conn.Open();
+                string sqlCommand = string.Format("INSERT INTO client_base (name, password) VALUES ('{0}', '{1}')", name, password);
+
+                using (var command = new NpgsqlCommand(sqlCommand, conn))
+                {
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+        public async Task UserExistsOrNotAsync(string name, string password)
+        {
+            await using (var conn = new NpgsqlConnection(Program.connString))
+            {
+                conn.Open();
+                string sqlCommand = string.Format(@"SELECT (password) FROM client_base WHERE name = '{0}'", name);
+
+                using (var command = new NpgsqlCommand(sqlCommand, conn))
+                {
+                    var reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        if (!(reader.GetString(0) == password) || reader.GetString(0) is null) 
+                            throw new Exception("Такого пользователя не существует");
+                    }
+                }
+            }
         }
     }
 }

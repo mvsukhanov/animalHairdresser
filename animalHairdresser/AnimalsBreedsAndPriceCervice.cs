@@ -4,10 +4,10 @@ namespace animalHairdresser
 {
     public class AnimalsBreedsAndPriceCervice : IAnimalsBreedsAndPriceService
     {
-        public async Task<int> GetPriceAsync(string kindOfAnimal, string breed, string connString)
+        public async Task<int> GetPriceAsync(string kindOfAnimal, string breed)
         {
             int cooficient = 0;
-            await using (var conn = new NpgsqlConnection(connString))
+            await using (var conn = new NpgsqlConnection(Program.connString))
             {
                 conn.Open();
                 string sqlCommand = string.Format(
@@ -28,11 +28,11 @@ namespace animalHairdresser
             return answer;
         }
 
-        public async Task<List<string>> KindOfAnimalsListAsync(string connString)
+        public async Task<List<string>> KindOfAnimalsListAsync()
         {
             List<string> kindOfAnimals = new List<string>();
 
-            await using (var conn = new NpgsqlConnection(connString))
+            await using (var conn = new NpgsqlConnection(Program.connString))
             {
                 conn.Open();
                 string sqlCommand = "select distinct kind_of_animal from animals_breed_and_price";
@@ -49,11 +49,11 @@ namespace animalHairdresser
             return kindOfAnimals;
         }
 
-        public async Task<List<string>> BreedFromKindOfAnimalsAsync(string kindOfAnimal, string connString)
+        public async Task<List<string>> BreedFromKindOfAnimalsAsync(string kindOfAnimal)
         {
             List<string> kindOfAnimals = new List<string>();
 
-            await using (var conn = new NpgsqlConnection(connString))
+            await using (var conn = new NpgsqlConnection(Program.connString))
             {
                 conn.Open();
                 string sqlCommand = string.Format(@"select distinct breed from animals_breed_and_price where kind_of_animal = '{0}'", kindOfAnimal);
